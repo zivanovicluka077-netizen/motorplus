@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="sr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Auto Servis Motor Plus — Zemun, Beograd</title>
+<meta name="description" content="Auto Servis Motor Plus — pouzdan servis vozila u Zemunu. Dijagnostika, mali i veliki servis, kočioni sistem, klima, vulkanizer.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0a0a0b;
+    --bg-alt:#111113;
+    --surface:#191a1d;
+    --surface-2:#212226;
+    --line:#2a2b30;
+    --white:#f4f3f0;
+    --muted:#9a9aa2;
+    --muted-2:#6c6d74;
+    --red:#e10600;
+    --red-dim:#7a0400;
+    --red-glow:rgba(225,6,0,.35);
+    --font-display:'Manrope',sans-serif;
+    --font-body:'Inter',sans-serif;
+    --container:1180px;
+    --radius:2px;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  @media (prefers-reduced-motion: reduce){
+    html{scroll-behavior:auto;}
+    *{animation-duration:.001ms !important; transition-duration:.001ms !important;}
+  }
+  body{
+    background:var(--bg);
+    color:var(--white);
+    font-family:var(--font-body);
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  img{max-width:100%;display:block;}
+  a{color:inherit;text-decoration:none;}
+  ul{list-style:none;}
+  h1,h2,h3,h4{font-family:var(--font-display);font-weight:800;line-height:1.05;letter-spacing:-.01em;}
+  .wrap{max-width:var(--container);margin:0 auto;padding:0 24px;}
+  .eyebrow{
+    display:inline-flex;align-items:center;gap:10px;
+    font-family:var(--font-body);font-weight:600;font-size:12.5px;
+    letter-spacing:.18em;text-transform:uppercase;color:var(--red);
+    margin-bottom:18px;
+  }
+  .eyebrow::before{content:"";width:22px;height:1px;background:var(--red);}
+  .btn{
+    display:inline-flex;align-items:center;justify-content:center;gap:10px;
+    padding:16px 30px;font-family:var(--font-body);font-weight:600;font-size:14.5px;
+    letter-spacing:.04em;text-transform:uppercase;border-radius:var(--radius);
+    cursor:pointer;border:1px solid transparent;transition:transform .25s ease, box-shadow .25s ease, background .25s ease, color .25s ease, border-color .25s ease;
+    white-space:nowrap;
+  }
+  .btn-primary{background:var(--red);color:#fff;}
+  .btn-primary:hover{box-shadow:0 0 0 1px var(--red), 0 12px 30px -8px var(--red-glow);transform:translateY(-2px);}
+  .btn-ghost{background:transparent;color:var(--white);border-color:rgba(244,243,240,.28);}
+  .btn-ghost:hover{border-color:var(--white);background:rgba(244,243,240,.06);}
+  .btn-block{width:100%;}
+
+  /* Rev-line scroll progress — signature motif */
+  #revline{
+    position:fixed;top:0;left:0;height:3px;width:0%;
+    background:linear-gradient(90deg,var(--red-dim),var(--red) 70%,#ff5a52);
+    box-shadow:0 0 10px var(--red-glow);
+    z-index:999;transition:width .08s linear;
+  }
+
+  /* HEADER */
+  header{
+    position:fixed;top:0;left:0;right:0;z-index:900;
+    background:rgba(10,10,11,.7);backdrop-filter:blur(14px);
+    border-bottom:1px solid rgba(244,243,240,.08);
+    transition:background .3s ease, padding .3s ease;
+  }
+  .nav{display:flex;align-items:center;justify-content:space-between;height:82px;transition:height .3s ease;}
+  header.scrolled .nav{height:66px;}
+  .logo{font-family:var(--font-display);font-weight:800;font-size:20px;letter-spacing:.01em;display:flex;align-items:center;gap:10px;}
+  .logo .dot{color:var(--red);}
+  .logo svg{flex-shrink:0;}
+  .nav-links{display:flex;align-items:center;gap:38px;}
+  .nav-links a{font-size:14px;font-weight:600;color:var(--muted);transition:color .2s ease;position:relative;}
+  .nav-links a:hover{color:var(--white);}
+  .nav-links a::after{content:"";position:absolute;left:0;bottom:-6px;width:0;height:1px;background:var(--red);transition:width .25s ease;}
+  .nav-links a:hover::after{width:100%;}
+  .nav-cta{display:flex;align-items:center;gap:14px;}
+  .nav-cta .btn{padding:12px 22px;font-size:13px;}
+  .burger{display:none;flex-direction:column;gap:5px;cursor:pointer;background:none;border:none;padding:8px;}
+  .burger span{width:24px;height:2px;background:var(--white);display:block;transition:.3s;}
+
+  /* MOBILE MENU */
+  .mobile-menu{
+    position:fixed;inset:0;background:var(--bg);z-index:850;
+    display:flex;flex-direction:column;justify-content:center;padding:24px 32px;
+    transform:translateY(-100%);transition:transform .4s cubic-bezier(.65,0,.35,1);
+  }
+  .mobile-menu.open{transform:translateY(0);}
+  .mobile-menu a{font-family:var(--font-display);font-size:32px;font-weight:800;padding:14px 0;border-bottom:1px solid var(--line);}
+  .mobile-menu .btn{margin-top:28px;}
+
+  /* HERO */
+  .hero{
+    position:relative;min-height:100svh;display:flex;align-items:center;
+    padding-top:100px;padding-bottom:60px;overflow:hidden;
+    background:
+      radial-gradient(ellipse 900px 500px at 82% 18%, rgba(225,6,0,.16), transparent 60%),
+      linear-gradient(180deg,#0a0a0b 0%, #0d0d0f 100%);
+  }
+  .hero::before{
+    content:"";position:absolute;inset:0;
+    background-image:
+      linear-gradient(rgba(244,243,240,.035) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(244,243,240,.035) 1px, transparent 1px);
+    background-size:56px 56px;
+    mask-image:linear-gradient(180deg, rgba(0,0,0,.9), transparent 75%);
+    -webkit-mask-image:linear-gradient(180deg, rgba(0,0,0,.9), transparent 75%);
+  }
+  .hero-tach{
+    position:absolute;right:-160px;top:50%;transform:translateY(-50%);
+    width:640px;height:640px;opacity:.5;pointer-events:none;
+  }
+  .hero-grid{position:relative;z-index:2;display:grid;grid-template-columns:1.15fr .85fr;gap:60px;align-items:center;}
+  .hero h1{font-size:clamp(40px,5.4vw,72px);margin-bottom:22px;}
+  .hero h1 .accent{color:var(--red);}
+  .hero p.lead{font-size:18px;color:var(--muted);max-width:520px;margin-bottom:36px;}
+  .hero-actions{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:52px;}
+  .hero-perks{display:grid;grid-template-columns:repeat(2,auto);gap:16px 40px;}
+  .perk{display:flex;align-items:center;gap:10px;font-size:14px;font-weight:600;color:var(--white);}
+  .perk svg{color:var(--red);flex-shrink:0;}
+  .hero-side{position:relative;}
+  .hero-card{
+    background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);
+    padding:32px;position:relative;overflow:hidden;
+  }
+  .hero-card::before{content:"";position:absolute;top:0;left:0;width:3px;height:100%;background:var(--red);}
+  .hero-card .badge{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:600;margin-bottom:6px;}
+  .hero-card .big{font-family:var(--font-display);font-size:44px;font-weight:800;margin-bottom:4px;}
+  .hero-card .sub{color:var(--muted);font-size:13.5px;margin-bottom:22px;}
+  .hero-hours{border-top:1px solid var(--line);padding-top:18px;display:grid;gap:9px;}
+  .hero-hours div{display:flex;justify-content:space-between;font-size:13.5px;}
+  .hero-hours span:first-child{color:var(--muted);}
+  .hero-hours .closed{color:var(--muted-2);}
+
+  section{padding:120px 0;position:relative;}
+  .section-head{max-width:640px;margin-bottom:56px;}
+  .section-head.center{margin-left:auto;margin-right:auto;text-align:center;}
+  .section-head h2{font-size:clamp(30px,3.6vw,46px);}
+  .section-head p{color:var(--muted);font-size:16.5px;margin-top:16px;}
+
+  /* SERVICES */
+  .services{background:var(--bg-alt);border-top:1px solid var(--line);border-bottom:1px solid var(--line);}
+  .service-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line);}
+  .service-card{
+    background:var(--bg-alt);padding:36px 28px;transition:background .3s ease;
+    display:flex;flex-direction:column;gap:16px;min-height:220px;
+  }
+  .service-card:hover{background:var(--surface);}
+  .service-card .icn{
+    width:46px;height:46px;border:1px solid var(--line);border-radius:var(--radius);
+    display:flex;align-items:center;justify-content:center;color:var(--red);
+    transition:border-color .3s ease, background .3s ease;
+  }
+  .service-card:hover .icn{border-color:var(--red);background:rgba(225,6,0,.08);}
+  .service-card h3{font-size:17px;font-weight:700;}
+  .service-card p{font-size:14px;color:var(--muted);}
+
+  /* WHY US */
+  .why-grid{display:grid;grid-template-columns:1fr 1fr;gap:70px;align-items:center;}
+  .why-text p{color:var(--muted);font-size:16px;margin-top:18px;}
+  .why-text p.statement{color:var(--white);font-size:22px;font-family:var(--font-display);font-weight:700;line-height:1.35;margin-top:0;}
+  .stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:28px;}
+  .stat{text-align:center;}
+  .gauge-wrap{position:relative;width:132px;height:132px;margin:0 auto 14px;}
+  .gauge-wrap svg{width:100%;height:100%;transform:rotate(-90deg);}
+  .gauge-track{fill:none;stroke:var(--line);stroke-width:6;}
+  .gauge-fill{fill:none;stroke:var(--red);stroke-width:6;stroke-linecap:round;stroke-dasharray:326.7;stroke-dashoffset:326.7;transition:stroke-dashoffset 1.4s cubic-bezier(.16,.84,.44,1);}
+  .gauge-num{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-weight:800;font-size:22px;}
+  .stat .label{font-size:13px;color:var(--muted);font-weight:600;}
+
+  /* ABOUT */
+  .about{background:var(--bg-alt);border-top:1px solid var(--line);border-bottom:1px solid var(--line);}
+  .about-grid{display:grid;grid-template-columns:.9fr 1.1fr;gap:70px;align-items:center;}
+  .about-visual{
+    aspect-ratio:4/5;border:1px solid var(--line);border-radius:var(--radius);position:relative;overflow:hidden;
+    background:
+      radial-gradient(ellipse at 30% 20%, rgba(225,6,0,.18), transparent 55%),
+      repeating-linear-gradient(135deg, rgba(244,243,240,.03) 0 2px, transparent 2px 26px),
+      linear-gradient(160deg,#161618,#0c0c0d);
+    display:flex;align-items:center;justify-content:center;
+  }
+  .about-visual svg{width:52%;color:rgba(244,243,240,.85);}
+  .about h2{font-size:clamp(28px,3.4vw,42px);margin-bottom:22px;}
+  .about p{color:var(--muted);font-size:16px;margin-bottom:16px;}
+  .founder{display:flex;align-items:center;gap:14px;margin-top:28px;padding-top:26px;border-top:1px solid var(--line);}
+  .founder .avatar{width:46px;height:46px;border-radius:50%;background:var(--surface-2);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-weight:800;color:var(--red);}
+  .founder .name{font-weight:700;font-size:14.5px;}
+  .founder .role{font-size:13px;color:var(--muted);}
+
+  /* GALLERY */
+  .gallery-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;}
+  .gallery-item{
+    aspect-ratio:1/1;border:1px solid var(--line);border-radius:var(--radius);position:relative;overflow:hidden;
+    display:flex;align-items:flex-end;padding:18px;
+  }
+  .gallery-item .bg{position:absolute;inset:0;z-index:0;}
+  .gallery-item::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg, transparent 40%, rgba(0,0,0,.75) 100%);}
+  .gallery-item span{position:relative;z-index:2;font-weight:700;font-size:14.5px;font-family:var(--font-display);}
+  .gallery-item svg{position:absolute;z-index:1;color:rgba(244,243,240,.12);width:70%;height:70%;top:8%;left:15%;}
+  .g1{background:linear-gradient(150deg,#1b1b1e,#0c0c0d);}
+  .g2{background:linear-gradient(150deg,#1c1416,#0c0c0d);}
+  .g3{background:linear-gradient(150deg,#151719,#0c0c0d);}
+  .g4{background:linear-gradient(150deg,#181414,#0c0c0d);}
+  .g5{background:linear-gradient(150deg,#141618,#0c0c0d);}
+  .g6{background:linear-gradient(150deg,#1a1618,#0c0c0d);}
+
+  /* REVIEWS */
+  .reviews{background:var(--bg-alt);border-top:1px solid var(--line);border-bottom:1px solid var(--line);}
+  .review-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line);}
+  .review-card{background:var(--bg-alt);padding:36px 30px;display:flex;flex-direction:column;gap:18px;}
+  .stars{display:flex;gap:3px;color:var(--red);}
+  .review-card p{color:var(--white);font-size:15.5px;line-height:1.65;}
+  .reviewer{display:flex;align-items:center;gap:12px;margin-top:auto;padding-top:10px;}
+  .reviewer .avatar{width:38px;height:38px;border-radius:50%;background:var(--surface-2);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;color:var(--red);font-family:var(--font-display);}
+  .reviewer .name{font-weight:700;font-size:14px;}
+  .reviewer .sub{font-size:12.5px;color:var(--muted);}
+
+  /* BOOKING */
+  .booking-grid{display:grid;grid-template-columns:.85fr 1.15fr;gap:64px;}
+  .booking-info h2{font-size:clamp(28px,3.4vw,42px);margin-bottom:18px;}
+  .booking-info p{color:var(--muted);font-size:16px;margin-bottom:28px;}
+  .booking-list{display:grid;gap:16px;margin-bottom:30px;}
+  .booking-list li{display:flex;gap:12px;align-items:flex-start;font-size:14.5px;color:var(--muted);}
+  .booking-list svg{color:var(--red);flex-shrink:0;margin-top:2px;}
+  .call-box{background:var(--surface);border:1px solid var(--line);padding:22px;border-radius:var(--radius);}
+  .call-box .label{font-size:12px;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);font-weight:600;margin-bottom:8px;}
+  .call-box .phone{font-family:var(--font-display);font-size:24px;font-weight:800;color:var(--white);}
+  .form-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:40px;}
+  .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+  .field{display:flex;flex-direction:column;gap:8px;}
+  .field.full{grid-column:1/-1;}
+  .field label{font-size:12.5px;font-weight:600;color:var(--muted);letter-spacing:.03em;text-transform:uppercase;}
+  .field input, .field select, .field textarea{
+    background:var(--bg-alt);border:1px solid var(--line);color:var(--white);
+    padding:13px 14px;font-family:var(--font-body);font-size:14.5px;border-radius:var(--radius);
+    transition:border-color .2s ease;
+  }
+  .field input:focus, .field select:focus, .field textarea:focus{
+    outline:none;border-color:var(--red);
+  }
+  .field textarea{resize:vertical;min-height:90px;}
+  .form-note{font-size:13px;color:var(--muted-2);margin-top:18px;text-align:center;}
+  .form-success{display:none;text-align:center;padding:40px 20px;}
+  .form-success.show{display:block;}
+  .form-success svg{color:var(--red);margin-bottom:16px;}
+  .form-success h3{font-size:22px;margin-bottom:10px;}
+  .form-success p{color:var(--muted);font-size:14.5px;}
+
+  /* CONTACT */
+  .contact{background:var(--bg-alt);border-top:1px solid var(--line);}
+  .contact-grid{display:grid;grid-template-columns:.85fr 1.15fr;gap:1px;background:var(--line);border:1px solid var(--line);}
+  .contact-info{background:var(--bg-alt);padding:48px;}
+  .contact-info h2{font-size:28px;margin-bottom:24px;}
+  .cinfo-row{display:flex;gap:14px;margin-bottom:22px;align-items:flex-start;}
+  .cinfo-row svg{color:var(--red);flex-shrink:0;margin-top:3px;}
+  .cinfo-row .t{font-size:12px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);font-weight:600;margin-bottom:3px;}
+  .cinfo-row .v{font-size:15px;font-weight:600;}
+  .contact-map{background:#111;min-height:420px;position:relative;}
+  .contact-map iframe{width:100%;height:100%;min-height:420px;border:0;filter:grayscale(.4) invert(.92) contrast(.85);display:block;}
+  .social-row{display:flex;gap:12px;margin-top:30px;}
+  .social-row a{width:42px;height:42px;border:1px solid var(--line);border-radius:var(--radius);display:flex;align-items:center;justify-content:center;transition:border-color .2s ease, color .2s ease;color:var(--muted);}
+  .social-row a:hover{border-color:var(--red);color:var(--red);}
+
+  footer{padding:50px 0 110px;}
+  .footer-grid{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:24px;border-top:1px solid var(--line);padding-top:36px;}
+  .footer-nav{display:flex;gap:26px;flex-wrap:wrap;}
+  .footer-nav a{font-size:13.5px;color:var(--muted);}
+  .footer-nav a:hover{color:var(--white);}
+  .footer-copy{font-size:13px;color:var(--muted-2);}
+
+  /* STICKY MOBILE CALL */
+  .sticky-call{
+    display:none;position:fixed;left:0;right:0;bottom:0;z-index:800;
+    background:var(--red);padding:16px 20px;align-items:center;justify-content:center;gap:10px;
+    font-family:var(--font-body);font-weight:700;font-size:15px;letter-spacing:.03em;
+    text-transform:uppercase;color:#fff;box-shadow:0 -8px 24px rgba(0,0,0,.4);
+  }
+
+  [data-reveal]{opacity:0;transform:translateY(26px);transition:opacity .7s ease, transform .7s ease;}
+  [data-reveal].in{opacity:1;transform:translateY(0);}
+
+  @media (max-width:980px){
+    .nav-links, .nav-cta{display:none;}
+    .burger{display:flex;}
+    .hero-grid{grid-template-columns:1fr;}
+    .hero-side{max-width:420px;}
+    .service-grid{grid-template-columns:repeat(2,1fr);}
+    .why-grid, .about-grid, .booking-grid, .contact-grid{grid-template-columns:1fr;}
+    .about-visual{order:-1;max-width:340px;margin:0 auto;}
+    .gallery-grid{grid-template-columns:repeat(2,1fr);}
+    .review-grid{grid-template-columns:1fr;}
+    section{padding:80px 0;}
+    .sticky-call{display:flex;}
+    body{padding-bottom:0;}
+    .form-grid{grid-template-columns:1fr;}
+    .contact-info{padding:36px 26px;}
+    .form-card{padding:26px;}
+  }
+  @media (max-width:560px){
+    .hero-perks{grid-template-columns:1fr;}
+    .gallery-grid{grid-template-columns:1fr 1fr;}
+  }
+  :focus-visible{outline:2px solid var(--red);outline-offset:3px;}
+</style>
+</head>
+<body>
+
+<div id="revline"></div>
+
+<header id="siteHeader">
+  <div class="wrap nav">
+    <a href="#pocetna" class="logo">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 13l1.5-4.5A2 2 0 0 1 6.4 7h11.2a2 2 0 0 1 1.9 1.5L21 13"/><path d="M3 13h18v4a1 1 0 0 1-1 1h-1a1 1 0 0 1-1-1v-1H6v1a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1v-4z"/><circle cx="7.5" cy="17.5" r="1.5" fill="currentColor" stroke="none"/><circle cx="16.5" cy="17.5" r="1.5" fill="currentColor" stroke="none"/></svg>
+      MOTOR<span class="dot">PLUS</span>
+    </a>
+    <nav class="nav-links">
+      <a href="#pocetna">Početna</a>
+      <a href="#usluge">Usluge</a>
+      <a href="#onama">O nama</a>
+      <a href="#galerija">Galerija</a>
+      <a href="#recenzije">Recenzije</a>
+      <a href="#kontakt">Kontakt</a>
+    </nav>
+    <div class="nav-cta">
+      <a href="#zakazivanje" class="btn btn-primary">Zakaži servis</a>
+    </div>
+    <button class="burger" id="burgerBtn" aria-label="Otvori meni">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#pocetna">Početna</a>
+  <a href="#usluge">Usluge</a>
+  <a href="#onama">O nama</a>
+  <a href="#galerija">Galerija</a>
+  <a href="#recenzije">Recenzije</a>
+  <a href="#kontakt">Kontakt</a>
+  <a href="#zakazivanje" class="btn btn-primary btn-block">Zakaži servis</a>
+</div>
+
+<main>
+  <!-- HERO -->
+  <section class="hero" id="pocetna">
+    <svg class="hero-tach" viewBox="0 0 200 200" fill="none">
+      <circle cx="100" cy="100" r="92" stroke="#e10600" stroke-opacity=".18" stroke-width="1"/>
+      <circle cx="100" cy="100" r="76" stroke="#f4f3f0" stroke-opacity=".07" stroke-width="1"/>
+      <g stroke="#f4f3f0" stroke-opacity=".22" stroke-width="1.5">
+        <line x1="100" y1="8" x2="100" y2="20"/>
+        <line x1="100" y1="180" x2="100" y2="192"/>
+        <line x1="8" y1="100" x2="20" y2="100"/>
+        <line x1="180" y1="100" x2="192" y2="100"/>
+      </g>
+      <path d="M100 100 L150 45" stroke="#e10600" stroke-width="2.5" stroke-linecap="round"/>
+      <circle cx="100" cy="100" r="5" fill="#e10600"/>
+    </svg>
+    <div class="wrap hero-grid">
+      <div data-reveal>
+        <div class="eyebrow">Auto servis · Zemun, Beograd</div>
+        <h1>Pouzdan servis <br>za vaš <span class="accent">automobil.</span></h1>
+        <p class="lead">Brza i profesionalna dijagnostika, servis i popravka vozila. Vaš automobil je kod nas u sigurnim rukama.</p>
+        <div class="hero-actions">
+          <a href="#zakazivanje" class="btn btn-primary">Zakaži servis</a>
+          <a href="tel:+381645552318" class="btn btn-ghost">Pozovi nas</a>
+        </div>
+        <div class="hero-perks">
+          <div class="perk"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg>Profesionalan servis</div>
+          <div class="perk"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L4 14h6l-1 8 9-12h-6l1-8z"/></svg>Brza dijagnostika</div>
+          <div class="perk"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21c4-3 7-6.5 7-11a7 7 0 10-14 0c0 4.5 3 8 7 11z"/><circle cx="12" cy="10" r="2.5"/></svg>Iskusni majstori</div>
+          <div class="perk"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l7 3v6c0 5-3.2 8.5-7 11-3.8-2.5-7-6-7-11V5l7-3z"/></svg>Garancija na radove</div>
+        </div>
+      </div>
+      <div class="hero-side" data-reveal>
+        <div class="hero-card">
+          <div class="badge">Radno vreme</div>
+          <div class="big">08–18h</div>
+          <div class="sub">Radnim danima, Zemun</div>
+          <div class="hero-hours">
+            <div><span>Ponedeljak–Petak</span><strong>08:00–18:00</strong></div>
+            <div><span>Subota</span><strong>09:00–15:00</strong></div>
+            <div><span>Nedelja</span><strong class="closed">Zatvoreno</strong></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- USLUGE -->
+  <section class="services" id="usluge">
+    <div class="wrap">
+      <div class="section-head" data-reveal>
+        <div class="eyebrow">Naše usluge</div>
+        <h2>Sve što vašem vozilu treba, na jednom mestu.</h2>
+      </div>
+    </div>
+    <div class="wrap">
+      <div class="service-grid" data-reveal>
+        <div class="service-card">
+          <div class="icn"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2v4M12 18v4M4.9 4.9l2.8 2.8M16.3 16.3l2.8 2.8M2 12h4M18 12h4M4.9 19.1l2.8-2.8M16.3 7.7l2.8-2.8"/><circle cx="12" cy="12" r="4"/></svg></div>
+          <h3>Mali i veliki servis</h3>
+          <p>Redovno održavanje vozila, zamena ulja, filtera i kontrola svih ključnih sistema.</p>
+        </div>
+        <div class="service-card">
+          <div class="icn"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="13" rx="1.5"/><path d="M7 21h10M9 17v4M15 17v4M7 9l2 2 4-4"/></svg></div>
+          <h3>Auto dijagnostika</h3>
+          <p>Kompletna kompjuterska dijagnostika i pronalaženje problema na vozilu.</p>
+        </div>
+        <div class="service-card">
+          <div class="icn"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3.2"/><path d="M12 3v3.2M12 17.8V21M3 12h3.2M17.8 12H21"/></svg></div>
+          <h3>Kočioni sistem</h3>
+          <p>Kontrola i zamena diskova, pločica i ostalih komponenti kočionog sistema.</p>
+        </div>
+        <div class="service-card">
+          <div class="icn"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 17l3-8h10l3 8"/><path d="M7 17v2M17 17v2"/><path d="M9 9V6a3 3 0 016 0v3"/></svg></div>
+          <h3>Trap i vešanje</h3>
+          <p>Pregled i popravka trapa, amortizera, kugli, spona i ostalih delova.</p>
+        </div>
+        <div class="service-card">
+          <div class="icn"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3c2 2.5 5 6 5 9.5A5 5 0 017 12.5C7 9 10 5.5 12 3z"/></svg></div>
+          <h3>Klimatizacija</h3>
+          <p>Servis, provera i dopuna auto-klima sistema.</p>
+        </div>
+        <div class="service-card">
+          <div class="icn"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="8" width="16" height="10" rx="1"/><path d="M9 8V6h6v2M9 13h6"/></svg></div>
+          <h3>Akumulatori</h3>
+          <p>Testiranje akumulatora i zamena dotrajalih akumulatora.</p>
+        </div>
+        <div class="service-card">
+          <div class="icn"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M5.6 18.4l2.1-2.1M16.3 7.7l2.1-2.1"/></svg></div>
+          <h3>Vulkanizerske usluge</h3>
+          <p>Montaža, demontaža, balansiranje i zamena pneumatika.</p>
+        </div>
+        <div class="service-card">
+          <div class="icn"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="5" y="6" width="11" height="13" rx="1"/><path d="M16 10h3v6h-3M8 3v3M12 3v3"/></svg></div>
+          <h3>Servis motora</h3>
+          <p>Dijagnostika i popravka problema sa motorom i pomoćnim sistemima.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ZASTO MI -->
+  <section id="zasto">
+    <div class="wrap why-grid">
+      <div class="why-text" data-reveal>
+        <div class="eyebrow">Zašto baš Motor Plus</div>
+        <p class="statement">Vaš automobil zaslužuje pouzdan servis.</p>
+        <p>U Auto Servisu Motor Plus verujemo da kvalitetan servis počinje iskrenim odnosom prema klijentu. Pre svakog rada objašnjavamo problem, predlažemo najbolje rešenje i unapred vas upoznajemo sa troškovima.</p>
+      </div>
+      <div class="stat-grid" data-reveal>
+        <div class="stat">
+          <div class="gauge-wrap">
+            <svg viewBox="0 0 120 120"><circle class="gauge-track" cx="60" cy="60" r="52"/><circle class="gauge-fill" data-pct="83" cx="60" cy="60" r="52"/></svg>
+            <div class="gauge-num">10+</div>
+          </div>
+          <div class="label">Godina iskustva</div>
+        </div>
+        <div class="stat">
+          <div class="gauge-wrap">
+            <svg viewBox="0 0 120 120"><circle class="gauge-track" cx="60" cy="60" r="52"/><circle class="gauge-fill" data-pct="95" cx="60" cy="60" r="52"/></svg>
+            <div class="gauge-num">2.5k+</div>
+          </div>
+          <div class="label">Servisiranih vozila</div>
+        </div>
+        <div class="stat">
+          <div class="gauge-wrap">
+            <svg viewBox="0 0 120 120"><circle class="gauge-track" cx="60" cy="60" r="52"/><circle class="gauge-fill" data-pct="98" cx="60" cy="60" r="52"/></svg>
+            <div class="gauge-num">4.9/5</div>
+          </div>
+          <div class="label">Prosečna ocena</div>
+        </div>
+        <div class="stat">
+          <div class="gauge-wrap">
+            <svg viewBox="0 0 120 120"><circle class="gauge-track" cx="60" cy="60" r="52"/><circle class="gauge-fill" data-pct="100" cx="60" cy="60" r="52"/></svg>
+            <div class="gauge-num">100%</div>
+          </div>
+          <div class="label">Posvećenost kvalitetu</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- O NAMA -->
+  <section class="about" id="onama">
+    <div class="wrap about-grid">
+      <div class="about-visual" data-reveal>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M3 13l1.5-4.5A2 2 0 0 1 6.4 7h11.2a2 2 0 0 1 1.9 1.5L21 13"/><path d="M3 13h18v4a1 1 0 0 1-1 1h-1a1 1 0 0 1-1-1v-1H6v1a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1v-4z"/><circle cx="7.5" cy="17.5" r="1.5"/><circle cx="16.5" cy="17.5" r="1.5"/></svg>
+      </div>
+      <div data-reveal>
+        <div class="eyebrow">O nama</div>
+        <h2>Vi vozite. Mi brinemo o ostalom.</h2>
+        <p>Auto Servis Motor Plus osnovan je 2014. godine sa ciljem da vozačima u Beogradu ponudi kvalitetnu i transparentnu uslugu održavanja i popravke vozila.</p>
+        <p>Naš tim čine iskusni automehaničari koji koriste savremenu dijagnostičku opremu i kvalitetne rezervne delove.</p>
+        <div class="founder">
+          <div class="avatar">MP</div>
+          <div>
+            <div class="name">Marko Petrović</div>
+            <div class="role">Vlasnik, Auto Servis Motor Plus · osnovan 2014.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- GALERIJA -->
+  <section id="galerija">
+    <div class="wrap">
+      <div class="section-head" data-reveal>
+        <div class="eyebrow">Galerija</div>
+        <h2>Pogled u našu radionicu.</h2>
+      </div>
+      <div class="gallery-grid" data-reveal>
+        <div class="gallery-item g1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><path d="M3 21h18M6 21V10l6-6 6 6v11M9 21v-6h6v6"/></svg><span>Radionica</span></div>
+        <div class="gallery-item g2"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><path d="M12 2v20M6 8h12M4 14h16l-2 6H6l-2-6z"/></svg><span>Auto dizalica</span></div>
+        <div class="gallery-item g3"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><path d="M3 13l1.5-4.5A2 2 0 0 1 6.4 7h11.2a2 2 0 0 1 1.9 1.5L21 13H3z"/><path d="M3 13h18v4a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1v-4z"/></svg><span>Vozilo na servisu</span></div>
+        <div class="gallery-item g4"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg><span>Mehaničar u radu</span></div>
+        <div class="gallery-item g5"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.1-3.1a5 5 0 01-6.7 6.7L4.7 22.3a1 1 0 01-1.4-1.4L13.7 10.5a5 5 0 016.7-6.7l-3.1 3.1z"/></svg><span>Alat</span></div>
+        <div class="gallery-item g6"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><rect x="3" y="5" width="18" height="12" rx="1"/><path d="M7 21h10M9 17v4M15 17v4M8 9l2 2 4-4"/></svg><span>Dijagnostička oprema</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- RECENZIJE -->
+  <section class="reviews" id="recenzije">
+    <div class="wrap">
+      <div class="section-head" data-reveal>
+        <div class="eyebrow">Recenzije</div>
+        <h2>Šta kažu naši klijenti.</h2>
+      </div>
+    </div>
+    <div class="wrap">
+      <div class="review-grid" data-reveal>
+        <div class="review-card">
+          <div class="stars">★★★★★</div>
+          <p>„Brzo su pronašli problem i sve završili u dogovorenom roku. Sve preporuke.“</p>
+          <div class="reviewer"><div class="avatar">NJ</div><div><div class="name">Nikola Jovanović</div><div class="sub">Klijent</div></div></div>
+        </div>
+        <div class="review-card">
+          <div class="stars">★★★★★</div>
+          <p>„Odličan servis i korektan odnos prema klijentima. Konačno servis kome verujem.“</p>
+          <div class="reviewer"><div class="avatar">SI</div><div><div class="name">Stefan Ilić</div><div class="sub">Klijent</div></div></div>
+        </div>
+        <div class="review-card">
+          <div class="stars">★★★★★</div>
+          <p>„Radio sam veliki servis kod njih. Sve je objašnjeno unapred i nije bilo skrivenih troškova.“</p>
+          <div class="reviewer"><div class="avatar">MS</div><div><div class="name">Milan Savić</div><div class="sub">Klijent</div></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ZAKAZIVANJE -->
+  <section id="zakazivanje">
+    <div class="wrap booking-grid">
+      <div class="booking-info" data-reveal>
+        <div class="eyebrow">Zakazivanje</div>
+        <h2>Zakažite servis za par klikova.</h2>
+        <p>Popunite formu i pošaljite zahtev — kontaktiraćemo vas radi potvrde termina koji vam odgovara.</p>
+        <ul class="booking-list">
+          <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg>Odgovor u toku radnog dana</li>
+          <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg>Bez skrivenih troškova</li>
+          <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg>Termin prilagođen vašem rasporedu</li>
+        </ul>
+        <div class="call-box">
+          <div class="label">Ili nas pozovite direktno</div>
+          <a href="tel:+381645552318" class="phone">+381 64 555 23 18</a>
+        </div>
+      </div>
+
+      <div class="form-card" data-reveal>
+        <form id="bookingForm">
+          <div class="form-grid">
+            <div class="field">
+              <label for="ime">Ime i prezime</label>
+              <input type="text" id="ime" name="ime" required placeholder="Petar Petrović">
+            </div>
+            <div class="field">
+              <label for="telefon">Telefon</label>
+              <input type="tel" id="telefon" name="telefon" required placeholder="06x xxx xxxx">
+            </div>
+            <div class="field">
+              <label for="marka">Marka vozila</label>
+              <input type="text" id="marka" name="marka" required placeholder="Volkswagen">
+            </div>
+            <div class="field">
+              <label for="model">Model vozila</label>
+              <input type="text" id="model" name="model" required placeholder="Golf 7">
+            </div>
+            <div class="field">
+              <label for="godiste">Godište</label>
+              <input type="text" id="godiste" name="godiste" required placeholder="2016">
+            </div>
+            <div class="field">
+              <label for="usluga">Usluga</label>
+              <select id="usluga" name="usluga" required>
+                <option value="" selected disabled>Izaberite uslugu</option>
+                <option>Mali i veliki servis</option>
+                <option>Auto dijagnostika</option>
+                <option>Kočioni sistem</option>
+                <option>Trap i vešanje</option>
+                <option>Klimatizacija</option>
+                <option>Akumulatori</option>
+                <option>Vulkanizerske usluge</option>
+                <option>Servis motora</option>
+                <option>Nisam siguran / drugo</option>
+              </select>
+            </div>
+            <div class="field full">
+              <label for="datum">Željeni datum</label>
+              <input type="date" id="datum" name="datum" required>
+            </div>
+            <div class="field full">
+              <label for="poruka">Poruka</label>
+              <textarea id="poruka" name="poruka" placeholder="Opišite problem ili dodatne napomene..."></textarea>
+            </div>
+          </div>
+          <button type="submit" class="btn btn-primary btn-block" style="margin-top:24px;">Pošalji zahtev</button>
+          <p class="form-note">Nakon slanja zahteva kontaktiraćemo vas radi potvrde termina.</p>
+        </form>
+        <div class="form-success" id="formSuccess">
+          <svg width="46" height="46" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="10"/><path d="M8 12l2.5 2.5L16 9"/></svg>
+          <h3>Zahtev je poslat.</h3>
+          <p>Nakon slanja zahteva kontaktiraćemo vas radi potvrde termina.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- KONTAKT -->
+  <section class="contact" id="kontakt">
+    <div class="wrap">
+      <div class="section-head" data-reveal>
+        <div class="eyebrow">Kontakt</div>
+        <h2>Posetite nas u Zemunu.</h2>
+      </div>
+    </div>
+    <div class="wrap">
+      <div class="contact-grid" data-reveal>
+        <div class="contact-info">
+          <h2>Auto Servis Motor Plus</h2>
+          <div class="cinfo-row">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 21s7-6.5 7-12a7 7 0 10-14 0c0 5.5 7 12 7 12z"/><circle cx="12" cy="9" r="2.5"/></svg>
+            <div><div class="t">Adresa</div><div class="v">Prvomajska 72, Zemun, Beograd</div></div>
+          </div>
+          <div class="cinfo-row">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 16.9v3a2 2 0 01-2.2 2 19.8 19.8 0 01-8.6-3.1 19.5 19.5 0 01-6-6A19.8 19.8 0 012.1 4.2 2 2 0 014.1 2h3a2 2 0 012 1.7c.1.9.3 1.8.6 2.7a2 2 0 01-.4 2.1L8 9.9a16 16 0 006 6l1.4-1.4a2 2 0 012.1-.4c.9.3 1.8.5 2.7.6a2 2 0 011.7 2z"/></svg>
+            <div><div class="t">Telefon</div><div class="v">+381 64 555 23 18</div></div>
+          </div>
+          <div class="cinfo-row">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>
+            <div><div class="t">Email</div><div class="v">kontakt@motorplus.rs</div></div>
+          </div>
+          <div class="cinfo-row">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg>
+            <div><div class="t">Radno vreme</div><div class="v">Pon–Pet: 08:00–18:00<br>Subota: 09:00–15:00</div></div>
+          </div>
+          <div class="social-row">
+            <a href="https://instagram.com/motorplus_beograd" target="_blank" rel="noopener" aria-label="Instagram">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1"/></svg>
+            </a>
+            <a href="tel:+381645552318" aria-label="Telefon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 16.9v3a2 2 0 01-2.2 2 19.8 19.8 0 01-8.6-3.1 19.5 19.5 0 01-6-6A19.8 19.8 0 012.1 4.2 2 2 0 014.1 2h3a2 2 0 012 1.7c.1.9.3 1.8.6 2.7a2 2 0 01-.4 2.1L8 9.9a16 16 0 006 6l1.4-1.4a2 2 0 012.1-.4c.9.3 1.8.5 2.7.6a2 2 0 011.7 2z"/></svg>
+            </a>
+          </div>
+        </div>
+        <div class="contact-map">
+          <iframe src="https://www.google.com/maps?q=Prvomajska%2072%2C%20Zemun%2C%20Beograd&output=embed" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="Mapa — Auto Servis Motor Plus, Prvomajska 72, Zemun"></iframe>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap footer-grid">
+    <a href="#pocetna" class="logo">MOTOR<span class="dot">PLUS</span></a>
+    <nav class="footer-nav">
+      <a href="#pocetna">Početna</a>
+      <a href="#usluge">Usluge</a>
+      <a href="#onama">O nama</a>
+      <a href="#galerija">Galerija</a>
+      <a href="#recenzije">Recenzije</a>
+      <a href="#kontakt">Kontakt</a>
+    </nav>
+    <div class="footer-copy">© 2026 Auto Servis Motor Plus. Zemun, Beograd.</div>
+  </div>
+</footer>
+
+<a href="tel:+381645552318" class="sticky-call">
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.9v3a2 2 0 01-2.2 2 19.8 19.8 0 01-8.6-3.1 19.5 19.5 0 01-6-6A19.8 19.8 0 012.1 4.2 2 2 0 014.1 2h3a2 2 0 012 1.7c.1.9.3 1.8.6 2.7a2 2 0 01-.4 2.1L8 9.9a16 16 0 006 6l1.4-1.4a2 2 0 012.1-.4c.9.3 1.8.5 2.7.6a2 2 0 011.7 2z"/></svg>
+  Pozovi odmah
+</a>
+
+<script>
+  // Rev-line scroll progress
+  const revline = document.getElementById('revline');
+  function updateRevline(){
+    const h = document.documentElement;
+    const scrolled = (h.scrollTop) / (h.scrollHeight - h.clientHeight) * 100;
+    revline.style.width = scrolled + '%';
+  }
+  document.addEventListener('scroll', updateRevline, {passive:true});
+  updateRevline();
+
+  // Header shrink
+  const header = document.getElementById('siteHeader');
+  document.addEventListener('scroll', () => {
+    header.classList.toggle('scrolled', window.scrollY > 40);
+  }, {passive:true});
+
+  // Mobile menu
+  const burger = document.getElementById('burgerBtn');
+  const mobileMenu = document.getElementById('mobileMenu');
+  burger.addEventListener('click', () => mobileMenu.classList.toggle('open'));
+  mobileMenu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => mobileMenu.classList.remove('open')));
+
+  // Reveal on scroll
+  const revealEls = document.querySelectorAll('[data-reveal]');
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
+  }, {threshold:.15});
+  revealEls.forEach(el => io.observe(el));
+
+  // Gauges
+  const gauges = document.querySelectorAll('.gauge-fill');
+  const gio = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if(e.isIntersecting){
+        const el = e.target;
+        const pct = parseFloat(el.dataset.pct);
+        const circumference = 2 * Math.PI * 52;
+        const offset = circumference - (pct/100)*circumference;
+        requestAnimationFrame(() => { el.style.strokeDashoffset = offset; });
+        gio.unobserve(el);
+      }
+    });
+  }, {threshold:.4});
+  gauges.forEach(g => gio.observe(g));
+
+  // Booking form
+  const form = document.getElementById('bookingForm');
+  const success = document.getElementById('formSuccess');
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    form.style.display = 'none';
+    success.classList.add('show');
+  });
+
+  // Min date = today
+  const datumInput = document.getElementById('datum');
+  if(datumInput){ datumInput.min = new Date().toISOString().split('T')[0]; }
+</script>
+</body>
+</html>
